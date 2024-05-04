@@ -1,9 +1,19 @@
 'use client';
 
 import React from "react";
+import LocationButton from "@/components/LocationButton";
+import LocationCard from "@/components/LocationCard";
+
+// Definición de tipo para la ubicación
+interface Location {
+  id: number;
+  lat: number;
+  long: number;
+  address: string;
+}
 
 // JSON con ubicaciones simuladas
-const locations = [
+const locations: Location[] = [
   {
     id: 1,
     lat: 40.7128,
@@ -24,7 +34,7 @@ const locations = [
   }
 ];
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
 
@@ -32,29 +42,16 @@ export default function Home() {
       <div className="flex-1 bg-gray-900 flex flex-col items-center justify-start p-4 overflow-y-auto">
         <h1 className="text-2xl font-bold text-white mb-4">Locations stored</h1>
         {locations.map((location) => (
-          <div
-            key={location.id}
-            className="bg-zing-900 rounded-lg p-4 mb-4 w-full max-w-md border border-gray-500"
-          >
-            <p className="text-white text-lg font-semibold mb-2">
-              {location.address}
-            </p>
-            <p className="text-gray-300 text-sm">
-              Latitude: {location.lat}, Longitude: {location.long}
-            </p>
-          </div>
+          <LocationCard key={location.id} location={location} />
         ))}
       </div>
 
       {/* Button Section (20%) */}
       <div className="h-20 bg-gray-900 flex items-center justify-center">
-        <button
-          className="px-4 py-2 bg-green-500 text-white font-bold rounded-lg focus:outline-none focus:ring focus:ring-green-400"
-          onClick={() => console.log("Location now button clicked!")}
-        >
-          Location now
-        </button>
+        <LocationButton onClick={() => console.log("Location now button clicked!")} />
       </div>
     </div>
   );
-}
+};
+
+export default Home;
