@@ -1,6 +1,10 @@
 'use client';
 
+//Thrid party imports
 import React from "react";
+import { toast } from 'react-hot-toast';
+
+//Local imports
 import LocationButton from "@/components/LocationButton";
 import LocationCard from "@/components/LocationCard";
 
@@ -58,8 +62,15 @@ const Home: React.FC = () => {
 
   // Guardar ubicación en localStorage
   const saveLocation = (location: Location) => {
-    const storedLocations: Location[] = JSON.parse(localStorage.getItem("locations") || "[]");
-    localStorage.setItem("locations", JSON.stringify([...storedLocations, location]));
+    try {
+      const storedLocations: Location[] = JSON.parse(localStorage.getItem("locations") || "[]");
+      const updatedLocations = [location, ...storedLocations];
+      localStorage.setItem("locations", JSON.stringify(updatedLocations));
+      toast.success('Location saved successfully');
+    } catch (error) {
+      console.error('Error saving location:', error);
+      toast.error('Failed to save location');
+    }
   };
 
   // Verificar si existe el JSON en el localStorage
