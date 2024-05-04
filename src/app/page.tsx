@@ -82,7 +82,9 @@ const Home: React.FC = () => {
       toast.success('Location saved successfully');
 
       // TODO: Rerender the component to show the new location, temporarily reload the page
-      window.location.reload();
+      setTimeout(function () {
+        window.location.reload();
+      }, 2000);
 
     } catch (error) {
       console.error('Error saving location:', error);
@@ -115,7 +117,7 @@ const Home: React.FC = () => {
         ))}
       </div>
       {/* Button Section (20%) */}
-      <div className="h-20 bg-gray-900 flex items-center justify-center">
+      <div className="fixed bottom-0 left-0 w-full bg-gray-900 flex items-center justify-center p-4">
         <LocationButton onClick={getLocation} saving={savingLocation} />
       </div>
     </div>
