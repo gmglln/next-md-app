@@ -40,10 +40,12 @@ const generateInitialLocations = (): Location[] => [
 const Home: React.FC = () => {
   const [currentLocation, setCurrentLocation] = React.useState<Location | null>(null);
   const [locations, setLocations] = React.useState<Location[]>([]);
+  const [savingLocation, setSavingLocation] = React.useState<boolean>(false);
 
   // Obtener ubicación actual
   const getLocation = () => {
     if (navigator.geolocation) {
+      setSavingLocation(true);
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         const newLocation: Location = {
@@ -70,6 +72,8 @@ const Home: React.FC = () => {
     } catch (error) {
       console.error('Error saving location:', error);
       toast.error('Failed to save location');
+    } finally {
+      setSavingLocation(false);
     }
   };
 
@@ -97,7 +101,7 @@ const Home: React.FC = () => {
       </div>
       {/* Button Section (20%) */}
       <div className="h-20 bg-gray-900 flex items-center justify-center">
-        <LocationButton onClick={getLocation} />
+        <LocationButton onClick={getLocation} saving={savingLocation} />
       </div>
     </div>
   );
