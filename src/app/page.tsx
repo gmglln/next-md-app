@@ -63,12 +63,27 @@ const Home: React.FC = () => {
   };
 
   // Guardar ubicación en localStorage
-  const saveLocation = (location: Location) => {
+  const saveLocation = async (location: Location) => {
     try {
       const storedLocations: Location[] = JSON.parse(localStorage.getItem("locations") || "[]");
-      const updatedLocations = [location, ...storedLocations];
+
+      // Hacer solicitud a la API de Google Maps
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.long}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
+      const data = await response.json();
+
+      // Extraer la dirección postal del resultado
+      const address = data.results[0]?.formatted_address || "";
+
+      // Agregar la dirección postal al objeto de ubicación
+      const locationWithAddress: Location = { ...location, address };
+
+      const updatedLocations = [locationWithAddress, ...storedLocations];
       localStorage.setItem("locations", JSON.stringify(updatedLocations));
       toast.success('Location saved successfully');
+
+      // TODO: Rerender the component to show the new location, temporarily reload the page
+      window.location.reload();
+
     } catch (error) {
       console.error('Error saving location:', error);
       toast.error('Failed to save location');
