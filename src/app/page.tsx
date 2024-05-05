@@ -52,7 +52,7 @@ const Home: React.FC = () => {
           id: Date.now(),
           lat: latitude,
           long: longitude,
-          address: "" // En blanco por ahora
+          address: ""
         };
         setCurrentLocation(newLocation);
         saveLocation(newLocation);
