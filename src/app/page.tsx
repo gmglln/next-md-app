@@ -1,7 +1,7 @@
 'use client';
 
 //Thrid party imports
-import React from "react";
+import React, { useState } from "react";
 import { toast } from 'react-hot-toast';
 
 //Local imports
@@ -38,9 +38,9 @@ const generateInitialLocations = (): Location[] => [
 ];
 
 const Home: React.FC = () => {
-  const [currentLocation, setCurrentLocation] = React.useState<Location | null>(null);
-  const [locations, setLocations] = React.useState<Location[]>([]);
-  const [savingLocation, setSavingLocation] = React.useState<boolean>(false);
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [savingLocation, setSavingLocation] = useState<boolean>(false);
 
   // Obtener ubicación actual
   const getLocation = () => {
@@ -81,10 +81,8 @@ const Home: React.FC = () => {
       localStorage.setItem("locations", JSON.stringify(updatedLocations));
       toast.success('Location saved successfully');
 
-      // TODO: Rerender the component to show the new location, temporarily reload the page
-      setTimeout(function () {
-        window.location.reload();
-      }, 2000);
+      // Actualizar el estado de la ubicación actual para mostrar la dirección
+      setCurrentLocation(locationWithAddress);
 
     } catch (error) {
       console.error('Error saving location:', error);
