@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
 
-// Definición de tipo para la ubicación
+// Type definition for the location
 interface Location {
   id: number;
   lat: number;
@@ -16,6 +16,7 @@ interface UseLocationHook {
   getLocation: () => void;
 }
 
+// Function to generate initial locations
 const generateInitialLocations = (): Location[] => [
   {
     id: 1,
@@ -42,7 +43,7 @@ const useLocationHook = (): UseLocationHook => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [savingLocation, setSavingLocation] = useState<boolean>(false);
 
-  // Obtener ubicación actual
+  // Function to get the user's current location
   const getLocation = () => {
     if (navigator.geolocation) {
       setSavingLocation(true);
@@ -62,26 +63,28 @@ const useLocationHook = (): UseLocationHook => {
     }
   };
 
-  // Guardar ubicación en localStorage
+  // Function to save the location to localStorage
   const saveLocation = async (location: Location) => {
     try {
+      // Get locations stored in localStorage
       const storedLocations: Location[] = JSON.parse(localStorage.getItem("locations") || "[]");
 
-      // Hacer solicitud a la API de Google Maps
+      // Make a request to the Google Maps API to get the postal address
       const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.long}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
       const data = await response.json();
 
-      // Extraer la dirección postal del resultado
+      // Extract the postal address from the result
       const address = data.results[0]?.formatted_address || "";
 
-      // Agregar la dirección postal al objeto de ubicación
+      // Add the postal address to the location object
       const locationWithAddress: Location = { ...location, address };
 
+      // Update stored locations
       const updatedLocations = [locationWithAddress, ...storedLocations];
       localStorage.setItem("locations", JSON.stringify(updatedLocations));
       toast.success('Location saved successfully');
 
-      // Actualizar el estado de la ubicación actual para mostrar la dirección
+      // Update the current location state to display the address
       setCurrentLocation(locationWithAddress);
 
     } catch (error) {
@@ -92,7 +95,7 @@ const useLocationHook = (): UseLocationHook => {
     }
   };
 
-  // Verificar si existe el JSON en el localStorage
+  // Effect hook to check and load stored locations from localStorage
   useEffect(() => {
     const storedLocationsString = localStorage.getItem("locations");
     if (!storedLocationsString) {
@@ -104,6 +107,7 @@ const useLocationHook = (): UseLocationHook => {
     }
   }, []);
 
+  // Return the state and functions of the hook
   return { currentLocation, locations, savingLocation, getLocation };
 };
 
